@@ -1,0 +1,13 @@
+.full {
+  width: 100vw;
+  height: 100px;
+  text-align: center;
+  background-color: #6d6d6d;
+  /*height: 50px;*/
+}
+
+.banner {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}

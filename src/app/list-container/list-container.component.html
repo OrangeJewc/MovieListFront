@@ -1,0 +1,50 @@
+<div class="mainContainer">
+  <div class="containerButton">
+
+    <div class="left">
+      <container-button [text]="'Lists'" (click)="select(1)" [selected]="listButtonActive"></container-button>
+    </div>
+
+    <div class="right">
+      <container-button [text]="'Search'" (click)="select(2)" [selected]="searchButtonActive"></container-button>
+    </div>
+    
+  </div>
+
+  <div *ngIf="listButtonActive" class="listsContainer">
+  </div>
+
+  <div *ngIf="searchButtonActive" class="searchContainer">
+    <div *ngIf="movieList" style="max-height: 100%; overflow: auto;">
+      <ul class="list-group" *ngFor="let movie of movieList">
+        <div class="list-group-item movie">
+          <div class="posterImage">
+            <img [src]="movie.posterPath">
+          </div>
+
+          <div class="textContainer">
+            <div class="titleText">
+              {{movie.title}}
+              <div class="yearText">
+                ({{movie.releaseDate}})
+              </div>
+            </div>
+
+            <div class="overviewText">
+              {{movie.overview}}
+            </div>
+          </div>
+
+          <div class="addContainer">
+            <button class="btn btn-success add-btn">Add</button>
+          </div>
+        </div>
+      </ul>
+    </div>
+  </div>
+
+  <div class="listFilterContainer">
+    <list-filter *ngIf="listButtonActive" [placeholder]="'Filter movie lists...'" #listFilter (keyup)="update('list')"></list-filter>
+    <list-filter *ngIf="searchButtonActive" [placeholder]="'Enter movie...'" #movieSearch (keyup)="update('movie')"></list-filter>
+  </div>
+</div>
