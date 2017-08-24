@@ -1,4 +1,47 @@
-<div class="mainContainer">
+<div *ngIf="listsMenuOpen" class="modalPopupContainer">
+  <div class="modalPopup">
+    <ul class="list-group" *ngFor="let list of lists">
+      <div class="list-group-item movieList">
+        <span class="fa fa-bars fa-3x hamburger"></span>
+
+        <div class="textContainerList">
+          <div class="listText">
+            <!--{{list.name}}-->
+            <inline-editor type="text" [(ngModel)]="list.name" (onSave)="blah($event)" name="editableText1" size="40"></inline-editor>
+          </div>
+
+          <div class="listOverviewText">
+            <!--{{list.description}}-->
+            <inline-editor type="text" [(ngModel)]="list.description" (onSave)="blah($event)" name="editableText2" size="40"></inline-editor>
+          </div>
+        </div>
+
+        <div class="deleteContainer">
+          <button class="btn btn-success del-btn" (click)="addToList(list)">Select</button>
+        </div>
+
+        <div class="viewContainer">
+          <button class="btn btn-primary view-btn">View</button>
+        </div>
+      </div>
+    </ul>
+  </div>
+</div>
+
+<div *ngIf="listButtonActive && !selectedList" class="toolbar">
+  <button class="btn btn-success" style="width: 100%; height: 75px;" (click)="newList()">
+    <span class="fa fa-plus fa-3x"></span>
+  </button>
+</div>
+
+<div *ngIf="selectedList" class="toolbar">
+  <button class="btn btn-danger" style="width: 100%; height: 75px;" (click)="viewList(null)">
+    <span class="fa fa-arrow-left fa-3x"></span>
+  </button>
+</div>
+
+<div class="mainContainer" (clickOutside)="toggleListsView(null, false)">
+  <!--Lists and Search buttons-->
   <div class="containerButton">
 
     <div class="left">
@@ -11,7 +54,61 @@
     
   </div>
 
+  <!--LISTS-->
   <div *ngIf="listButtonActive" class="listsContainer">
+    <div *ngIf="lists && !selectedList" style="max-height: 100%; overflow: auto;">
+      <ul class="list-group" *ngFor="let list of lists">
+        <div class="list-group-item movieList">
+          <span class="fa fa-bars fa-3x hamburger"></span>
+
+          <div class="textContainerList">
+            <div class="listText">
+              <inline-editor type="text" [(ngModel)]="list.name" (onSave)="blah($event)" name="editableText1" size="40"></inline-editor>
+            </div>
+
+            <div class="listOverviewText">
+              <inline-editor type="text" [(ngModel)]="list.description" (onSave)="blah($event)" name="editableText2" size="40"></inline-editor>
+            </div>
+          </div>
+
+          <div class="deleteContainer">
+            <button class="btn btn-danger del-btn" (click)="deleteList(list)">Delete</button>
+          </div>
+
+          <div class="viewContainer">
+            <button class="btn btn-primary view-btn" (click)="viewList(list)">View</button>
+          </div>
+        </div>
+      </ul>
+    </div>
+
+    <!--VIEW LISTS-->
+    <div *ngIf="selectedList" style="max-height: 100%; overflow: auto;">
+      <ul class="list-group" *ngFor="let movie of selectedList.movies">
+        <div class="list-group-item movie">
+          <div class="posterImage">
+            <img [src]="movie.posterPath">
+          </div>
+
+          <div class="textContainer">
+            <div class="titleText">
+              {{movie.title}}
+              <div class="yearText">
+                ({{movie.releaseDate}})
+              </div>
+            </div>
+
+            <div class="overviewText">
+              {{movie.overview}}
+            </div>
+          </div>
+
+          <div class="addContainer">
+            <button class="btn btn-success add-btn" (click)="toggleListsView(movie, true)">Add</button>
+          </div>
+        </div>
+      </ul>
+    </div>
   </div>
 
   <div *ngIf="searchButtonActive" class="searchContainer">
@@ -36,10 +133,17 @@
           </div>
 
           <div class="addContainer">
-            <button class="btn btn-success add-btn">Add</button>
+            <button class="btn btn-success add-btn" (click)="toggleListsView(movie, true)">Add</button>
           </div>
         </div>
       </ul>
+    </div>
+
+    <!--If movie search empty or null show text-->
+    <div *ngIf="!movieList || (movieList && movieList.length == 0)" style="max-height: 100%; overflow: auto;">
+      <div class="placeholder">
+        <h1>Search for a movie(s)!</h1>
+      </div>
     </div>
   </div>
 

@@ -17,7 +17,7 @@ export class ContainerButtonComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.selected = false;
+    // this.selected = false;
   }
 
 }

@@ -8,17 +8,22 @@
   margin-bottom: 50px;
 }
 
+.toolbar {
+  min-height: 75px;
+  /*border: 1px solid #000;*/
+  position: absolute;
+  left: 240px;
+  width: 75px;
+  top: 151px;
+}
+
 .containerButton {
   display: flex;
   height: 75px;
   /*border-bottom: 1px solid #000;*/
 }
 
-.listsContainer {
-  height: 275px;
-}
-
-.searchContainer {
+.searchContainer, .listsContainer {
   background-color: #3a3a3a;
   height: 275px;
 }
@@ -32,13 +37,17 @@
   width: 50%;
 }
 
-.movie {
+.movie, .movieList {
   background-color: #3a3a3a;
   color: #000;
   height: 60px;
   padding: 0;
   display: flex;
   justify-content: center;
+}
+
+.movieList {
+  height: 100px !important;
 }
 
 .posterImage {
@@ -54,13 +63,24 @@ img {
   height: 50px;
 }
 
-.textContainer {
+.textContainer, .textContainerList {
   width: 80%;
   height: 100%;
 }
 
+.textContainerList {
+  transform: translateY(10px) translateX(25px);
+}
+
 .titleText {
   display: flex;
+  max-width: 550px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.listText {
+  max-width: 550px;
   font-size: 24px;
   font-weight: 600;
 }
@@ -72,6 +92,16 @@ img {
   text-overflow: clip;
   transform: translateY(-4px);
   white-space: nowrap;
+  font-style: italic;
+}
+
+.listOverviewText {
+  max-width: 550px;
+  overflow: auto;
+  text-overflow: clip;
+  white-space: nowrap;
+  font-style: italic;
+  transform: translateY(15px);
 }
 
 .yearText {
@@ -82,17 +112,55 @@ img {
   font-weight: 200;
 }
 
-.addContainer {
+.addContainer, .deleteContainer {
   position: absolute;
   right: 0;
   margin: 10px;
 }
 
-.add-btn {
-  height: 40px;
+.viewContainer {
+  position: absolute;
+  padding-right: 15px;
+  right: 90px;
+  margin: 10px;
+}
+
+.view-btn, .del-btn {
+  height: 80px;
   width: 90px;
 }
 
-.add-btn:hover {
+.add-btn {
+  height: 40px;
+  widows: 90px;
+}
+
+.view-btn:hover, .del-btn:hover, .add-btn:hover {
   cursor: pointer;
+}
+
+.placeholder {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hamburger {
+  position: absolute;
+  left: 0;
+  margin-left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #212121;
+}
+
+.modalPopupContainer {
+  position: absolute;
+  height: 400px;
+  width: 800px;
+  background-color: #3a3a3a;
+  opacity: 0.95;
+  z-index: 1;
+  margin-top: 50px;
 }

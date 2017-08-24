@@ -10,6 +10,9 @@ import { ContainerButtonComponent } from './list-container/container-button/cont
 import { ListFilterComponent } from './list-container/list-filter/list-filter.component';
 import { MovieService } from './list-container/movie-service.service';
 
+import { InlineEditorModule } from 'ng2-inline-editor';
+import { ClickOutsideModule } from 'ng-click-outside';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +24,9 @@ import { MovieService } from './list-container/movie-service.service';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    InlineEditorModule,
+    ClickOutsideModule
   ],
   providers: [MovieService],
   bootstrap: [AppComponent]
