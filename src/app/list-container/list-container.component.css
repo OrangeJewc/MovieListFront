@@ -144,6 +144,7 @@ img {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  width: fit-content;
 }
 
 .hamburger {
@@ -163,4 +164,8 @@ img {
   opacity: 0.95;
   z-index: 1;
   margin-top: 50px;
+}
+
+.listHeader {
+  color: #000;
 }

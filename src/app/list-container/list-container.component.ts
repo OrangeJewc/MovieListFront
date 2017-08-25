@@ -90,7 +90,7 @@ export class ListContainerComponent implements OnInit {
 
     list.numMovies = 0;
     list.name = `Movie List ${list.id}`;
-    list.description = `List Description...`;
+    list.description = `Click to change name and/or description!`;
     list.movies = [];
 
     this.lists.push(list);
@@ -121,6 +121,20 @@ export class ListContainerComponent implements OnInit {
   addToList(list: List) {
     list.movies.push(this.selectedMovie);
     this.toggleListsView(null, false);
+  }
+
+  removeFromList(movie: Movie) {
+    let idx = this.selectedList.movies.indexOf(movie);
+    let list = this.selectedList.movies;
+    
+    if(idx == 0 && list.length > 1)
+      list = list.slice(1);
+    else if(idx == 0)
+      list = [];
+    else
+      list = list.slice(0, idx).concat(list.slice(idx+1));
+
+    this.selectedList.movies = list;
   }
 
   viewList(list: List) {

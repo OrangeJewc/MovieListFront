@@ -44,12 +44,19 @@
   <!--Lists and Search buttons-->
   <div class="containerButton">
 
-    <div class="left">
+    <!--Show buttons if not viewing list-->
+    <div class="left" *ngIf="selectedList == null">
       <container-button [text]="'Lists'" (click)="select(1)" [selected]="listButtonActive"></container-button>
     </div>
 
-    <div class="right">
+    <div class="right" *ngIf="selectedList == null">
       <container-button [text]="'Search'" (click)="select(2)" [selected]="searchButtonActive"></container-button>
+    </div>
+
+    <div *ngIf="selectedList" style="width: 100%">
+      <div style="position: relative; display: flex; justify-content:center; top:50%; transform: translateY(-50%);">
+        <h1 class="listHeader">{{selectedList.name}}</h1>
+      </div>
     </div>
     
   </div>
@@ -82,7 +89,14 @@
       </ul>
     </div>
 
-    <!--VIEW LISTS-->
+    <!--IF NO LISTS SHOW MESSAGE-->
+    <div *ngIf="!lists || (lists && lists.length == 0)" style="max-height: 100%; overflow: auto;">
+      <div class="placeholder">
+        <h1>Click '+' to create new list!</h1>
+      </div>
+    </div>
+
+    <!--VIEW MOVIES-->
     <div *ngIf="selectedList" style="max-height: 100%; overflow: auto;">
       <ul class="list-group" *ngFor="let movie of selectedList.movies">
         <div class="list-group-item movie">
@@ -104,7 +118,7 @@
           </div>
 
           <div class="addContainer">
-            <button class="btn btn-success add-btn" (click)="toggleListsView(movie, true)">Add</button>
+            <button class="btn btn-danger add-btn" (click)="removeFromList(movie)">Remove</button>
           </div>
         </div>
       </ul>
