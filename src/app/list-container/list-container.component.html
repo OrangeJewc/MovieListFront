@@ -92,7 +92,8 @@
     <!--IF NO LISTS SHOW MESSAGE-->
     <div *ngIf="!lists || (lists && lists.length == 0)" style="max-height: 100%; overflow: auto;">
       <div class="placeholder">
-        <h1>Click '+' to create new list!</h1>
+        <h1 *ngIf="!loadingLists">Click '+' to create new list!</h1>
+        <h1 *ngIf="loadingLists">Loading...</h1>
       </div>
     </div>
 

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Http, Response, RequestOptions } from '@angular/http';
 
 import { MovieService } from './movie-service.service';
 import { Movie } from './movie';
@@ -6,6 +7,7 @@ import { List } from './list';
 
 import { InlineEditorComponent }  from 'ng2-inline-editor';
 import { ClickOutsideDirective } from 'ng-click-outside';
+import 'rxjs/Rx';
 
 // import 'rxjs/add/operator/map';
 
@@ -32,10 +34,20 @@ export class ListContainerComponent implements OnInit {
   listsMenuOpen: boolean = false;
   selectedMovie: Movie;
   selectedList: List;
+
+  loadingLists: boolean = true;
   
-  constructor(private movieService: MovieService) { }
+  constructor(
+    private movieService: MovieService,
+    private http: Http) { }
 
   ngOnInit() {
+    this.loadLists();
+    // let options = new RequestOptions({ body: '{"name" : "AWESOME MOVIE"}' });
+
+    // this.http.post('https://movielistback.herokuapp.com/addList.php?name=MY AWESOME MOVIE&description=HEHE&userId=1', '').subscribe((res) => {
+    //   console.log(res);
+    // })
   }
 
   select(btn) {
@@ -80,6 +92,29 @@ export class ListContainerComponent implements OnInit {
     }
   }
 
+  loadLists() {
+    this.http.get(`https://movielistback.herokuapp.com/getLists.php`).subscribe((res) => {
+      // console.log(res.text());
+      if(res.text() !== '0 results') {
+        for(let i = 0; i < res.json().length; i++) {
+          let r = res.json()[i];
+          let l = new List();
+
+          l.id = r.id;
+          l.name = r.name;
+          l.description = r.description;
+          l.movies = r.movies ? r.movies : [];
+          l.numMovies = r.movies ? r.movies.length : 0;
+
+          this.lists.push(l);
+        }
+      }
+      this.loadingLists = false;
+    }, (err) => {
+      this.loadingLists = false;
+    })
+  }
+
   newList() {
     let list = new List();
 
@@ -93,7 +128,12 @@ export class ListContainerComponent implements OnInit {
     list.description = `Click to change name and/or description!`;
     list.movies = [];
 
+    this.http.post(`https://movielistback.herokuapp.com/addList.php?id=${list.id}&name=${list.name}&description=${list.description}&userId=1`, '').subscribe((res) => {
+      console.log(res);
+    })
+
     this.lists.push(list);
+    console.log(this.lists);
   }
 
   deleteList(list) {
@@ -105,6 +145,10 @@ export class ListContainerComponent implements OnInit {
       this.lists = [];
     else
       this.lists = this.lists.slice(0, idx).concat(this.lists.slice(idx+1));
+
+    this.http.post(`https://movielistback.herokuapp.com/deleteList.php?id=${list.id}`, '').subscribe((res) => {
+      console.log(res);
+    })
   }
 
   toggleListsView(movie: Movie, status) {
@@ -119,7 +163,20 @@ export class ListContainerComponent implements OnInit {
   }
 
   addToList(list: List) {
-    list.movies.push(this.selectedMovie);
+    let m = this.selectedMovie;
+    list.movies.push(m);
+    
+    let find = /[']/;
+    let re = new RegExp(find, 'g');
+    
+    let title = m.title.replace(re, "\\'");
+    let overview = m.overview.replace(re, "\\'");
+    console.log(title, overview);
+
+    this.http.post(`https://movielistback.herokuapp.com/addMovie.php?id=${m.id}&title=${title}&overview=${overview}&listId=${list.id}&releaseDate=${m.releaseDate}&posterPath=${m.posterPath}`, '').subscribe((res) => {
+      console.log(res);
+    })
+
     this.toggleListsView(null, false);
   }
 
