@@ -25,7 +25,14 @@
 
 .searchContainer, .listsContainer {
   background-color: #3a3a3a;
+}
+
+.searchContainer {
   height: 275px;
+}
+
+.listsContainer {
+  height: 325px;
 }
 
 .listFilterContainer {

@@ -12,6 +12,10 @@ import { MovieService } from './list-container/movie-service.service';
 
 import { InlineEditorModule } from 'ng2-inline-editor';
 import { ClickOutsideModule } from 'ng-click-outside';
+import { UserComponent } from './user/user.component';
+
+import { NewUserComponent } from './user/new-user/new-user.component';
+import { UserService } from './user/user.service';
 
 @NgModule({
   declarations: [
@@ -19,7 +23,9 @@ import { ClickOutsideModule } from 'ng-click-outside';
     HeaderComponent,
     ListContainerComponent,
     ContainerButtonComponent,
-    ListFilterComponent
+    ListFilterComponent,
+    UserComponent,
+    NewUserComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +34,10 @@ import { ClickOutsideModule } from 'ng-click-outside';
     InlineEditorModule,
     ClickOutsideModule
   ],
-  providers: [MovieService],
+  providers: [
+    MovieService,
+    UserService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

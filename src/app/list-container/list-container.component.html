@@ -70,11 +70,11 @@
 
           <div class="textContainerList">
             <div class="listText">
-              <inline-editor type="text" [(ngModel)]="list.name" (onSave)="blah($event)" name="editableText1" size="40"></inline-editor>
+              <inline-editor type="text" [(ngModel)]="list.name" (onSave)="updateList($event, 'name', list)" name="editableText1" size="40"></inline-editor>
             </div>
 
             <div class="listOverviewText">
-              <inline-editor type="text" [(ngModel)]="list.description" (onSave)="blah($event)" name="editableText2" size="40"></inline-editor>
+              <inline-editor type="text" [(ngModel)]="list.description" (onSave)="updateList($event, 'description', list)" name="editableText2" size="40"></inline-editor>
             </div>
           </div>
 
@@ -162,8 +162,8 @@
     </div>
   </div>
 
-  <div class="listFilterContainer">
-    <list-filter *ngIf="listButtonActive" [placeholder]="'Filter movie lists...'" #listFilter (keyup)="update('list')"></list-filter>
-    <list-filter *ngIf="searchButtonActive" [placeholder]="'Enter movie...'" #movieSearch (keyup)="update('movie')"></list-filter>
+  <div class="listFilterContainer" *ngIf="searchButtonActive">
+    <!--<list-filter *ngIf="listButtonActive" [placeholder]="'Filter movie lists...'" #listFilter (keyup)="update('list')"></list-filter>-->
+    <list-filter [placeholder]="'Enter movie...'" #movieSearch (keyup)="update('movie')"></list-filter>
   </div>
 </div>

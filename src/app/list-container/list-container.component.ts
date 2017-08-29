@@ -1,13 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Http, Response, RequestOptions } from '@angular/http';
 
 import { MovieService } from './movie-service.service';
 import { Movie } from './movie';
 import { List } from './list';
+import { User } from '../user/user';
 
 import { InlineEditorComponent }  from 'ng2-inline-editor';
 import { ClickOutsideDirective } from 'ng-click-outside';
 import 'rxjs/Rx';
+
+import { UserService } from '../user/user.service';
+
+declare var $:any;
 
 // import 'rxjs/add/operator/map';
 
@@ -18,7 +23,7 @@ const IMG_URL = `https://image.tmdb.org/t/p/w500`;
   templateUrl: './list-container.component.html',
   styleUrls: ['./list-container.component.css']
 })
-export class ListContainerComponent implements OnInit {
+export class ListContainerComponent implements OnInit, OnChanges {
 
   editableText: string;
 
@@ -30,24 +35,44 @@ export class ListContainerComponent implements OnInit {
 
   movieList: Movie[];
   lists: List[] = [];
+  allLists: List[] = [];
 
   listsMenuOpen: boolean = false;
   selectedMovie: Movie;
   selectedList: List;
 
   loadingLists: boolean = true;
+  @Input() selectedUser: User;
   
   constructor(
     private movieService: MovieService,
-    private http: Http) { }
+    private http: Http,
+    private userService: UserService) { }
 
-  ngOnInit() {
+  ngOnChanges(changes: SimpleChanges) {
+    this.getAllLists();
     this.loadLists();
-    // let options = new RequestOptions({ body: '{"name" : "AWESOME MOVIE"}' });
+  }
+  
+  ngOnInit() {
+    // this.loadLists();
+    // this.getAllLists();
+  }
 
-    // this.http.post('https://movielistback.herokuapp.com/addList.php?name=MY AWESOME MOVIE&description=HEHE&userId=1', '').subscribe((res) => {
-    //   console.log(res);
-    // })
+  getAllLists() {
+    this.allLists = [];
+
+    this.http.get(`https://movielistback.herokuapp.com/getLists.php?userId=all`).subscribe((res) => {
+      res.json().map(list => {
+        list.id = parseInt(list.id);
+        this.allLists.push(list);
+      })
+      // console.log(res);
+    });
+  }
+
+  getListId() {
+    return this.allLists[this.allLists.length - 1].id + 1;
   }
 
   select(btn) {
@@ -93,14 +118,19 @@ export class ListContainerComponent implements OnInit {
   }
 
   loadLists() {
-    this.http.get(`https://movielistback.herokuapp.com/getLists.php`).subscribe((res) => {
+    this.selectedUser = this.userService.selectedUser;
+    this.lists = [];
+
+    // console.log(this.selectedUser);
+
+    this.http.get(`https://movielistback.herokuapp.com/getLists.php?userId=${this.selectedUser.id}`).subscribe((res) => {
       // console.log(res.text());
       if(res.text() !== '0 results') {
         for(let i = 0; i < res.json().length; i++) {
           let r = res.json()[i];
           let l = new List();
 
-          l.id = r.id;
+          l.id = parseInt(r.id);
           l.name = r.name;
           l.description = r.description;
           l.movies = r.movies ? r.movies : [];
@@ -118,17 +148,19 @@ export class ListContainerComponent implements OnInit {
   newList() {
     let list = new List();
 
-    if(this.lists.length == 0)
-      list.id = 1;
-    else
-      list.id = this.lists[this.lists.length-1].id + 1;
+    // if(this.lists.length == 0)
+    //   list.id = 1;
+    // else
+    //   list.id = this.lists[this.lists.length-1].id + 1;
+
+    list.id = this.getListId();
 
     list.numMovies = 0;
-    list.name = `Movie List ${list.id}`;
+    list.name = `New Movie List`;
     list.description = `Click to change name and/or description!`;
     list.movies = [];
 
-    this.http.post(`https://movielistback.herokuapp.com/addList.php?id=${list.id}&name=${list.name}&description=${list.description}&userId=1`, '').subscribe((res) => {
+    this.http.post(`https://movielistback.herokuapp.com/addList.php?id=${list.id}&name=${list.name}&description=${list.description}&userId=${this.selectedUser.id}`, '').subscribe((res) => {
       console.log(res);
     })
 
@@ -191,6 +223,10 @@ export class ListContainerComponent implements OnInit {
     else
       list = list.slice(0, idx).concat(list.slice(idx+1));
 
+    this.http.post(`https://movielistback.herokuapp.com/deleteMovie.php?id=${movie.id}&listId=${this.selectedList.id}`, '').subscribe((res) => {
+      console.log(res);
+    })
+
     this.selectedList.movies = list;
   }
 
@@ -199,7 +235,27 @@ export class ListContainerComponent implements OnInit {
   }
 
   blah(ev) {
-    console.log(ev);
+    console.log(this.selectedUser);
+  }
+
+  updateList(event: string, type: string, list: List) {
+    let find = /[']/;
+    let re = new RegExp(find, 'g');
+    let text = event.replace(re, "\\'");
+
+    this.http.post(`https://movielistback.herokuapp.com/updateList.php?id=${list.id}&type=${type}&text=${text}`, '').subscribe((res) => {
+      console.log(res);
+    })
+    // console.log(list);
+  }
+
+  get setUser(): User {
+    return this.selectedUser;
+  }
+  
+  @Input()
+  set setUser(user: User) {
+    this.selectedUser = user;
   }
 
 }

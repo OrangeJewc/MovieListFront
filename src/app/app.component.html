@@ -5,6 +5,7 @@
   </div>
 
   <div class="center">
-    <list-container #l></list-container>
+    <user #user></user>
+    <list-container *ngIf="user.loaded" #l [setUser]="user.selectedUser"></list-container>
   </div>
 </div>

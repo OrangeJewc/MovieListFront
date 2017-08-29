@@ -1,0 +1,12 @@
+<div *ngIf="loaded" class="position">
+  <div class="userContainer">
+    <!--<h5>User: </h5>-->
+    <button class="btn btn-success" (click)="createUser()">New User</button>
+
+    <select class="form-control" (change)="updateUser($event)">
+      <option *ngFor="let user of users" [value]="user.id" >{{user.name}}</option>
+    </select>
+
+    <button class="btn btn-danger" (click)="deleteUser()">Delete User</button>
+  </div>
+</div>
